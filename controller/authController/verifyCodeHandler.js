@@ -16,10 +16,10 @@ const client = require("twilio")(accountSid, authToken);
 
 module.exports.verifyCode = async (req, res) => {
   try {
-    const { otp } = req.body;
+    const { otp, number } = req.body;
     client.verify.v2
       .services(verifySid)
-      .verificationChecks.create({ to: "+905063622251", code: otp })
+      .verificationChecks.create({ to: number, code: otp })
       .then((verification_check) => console.log(verification_check.status));
   } catch {}
 };

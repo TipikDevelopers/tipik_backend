@@ -35,7 +35,7 @@ module.exports.login = async (req, res) => {
 
     client.verify.v2
       .services(verifySid)
-      .verifications.create({ to: "+905063622251", channel: "sms" })
+      .verifications.create({ to: number, channel: "sms" })
       .then((verification) => console.log(verification));
 
     if (row.length == 0) {

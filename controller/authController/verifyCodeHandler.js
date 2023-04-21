@@ -17,9 +17,37 @@ const client = require("twilio")(accountSid, authToken);
 module.exports.verifyCode = async (req, res) => {
   try {
     const { otp, number } = req.body;
-    client.verify.v2
-      .services(verifySid)
-      .verificationChecks.create({ to: number, code: otp })
-      .then((verification_check) => console.log(verification_check.status));
-  } catch {}
+    if (!otp || !number)
+      return res.status(401).json({
+        err: "bad request",
+      });
+    try {
+      const token = jwt.sign(
+        {
+          number: row,
+        },
+        process.env.SECRET_KEY,
+        {
+          expiresIn: "3h",
+        }
+      );
+      client.verify.v2
+        .services(verifySid)
+        .verificationChecks.create({ to: number, code: otp })
+        .then((verification_check) =>
+          res.status(200).json({
+            token: token,
+            response: verification_check.status,
+          })
+        );
+    } catch {
+      return res.status(401).json({
+        err: "wron number or invalid otp code format",
+      });
+    }
+  } catch {
+    return res.status(500).json({
+      err: "server error",
+    });
+  }
 };

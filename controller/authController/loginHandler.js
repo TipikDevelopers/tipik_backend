@@ -25,7 +25,7 @@ module.exports.login = async (req, res) => {
     }
     const row = await new Promise((resolve, reject) => {
       con.query(
-        `select telNum from users where telNum = '${number}'`,
+        `select * from users where telNum = '${number}'`,
         (err, result) => {
           if (err) reject(err);
           else resolve(result);
@@ -35,11 +35,14 @@ module.exports.login = async (req, res) => {
 
     client.verify.v2
       .services(verifySid)
-      .verifications.create({ to: number, channel: "sms" })
-      .then((verification) => console.log(verification));
-
-    if (row.length == 0) {
-    } else {
-    }
-  } catch {}
+      .verifications.create({ to: number, channel: "sms" });
+    return res.status(200).json({
+      token: token,
+      msg: "success",
+    });
+  } catch {
+    return res.status(500).json({
+      err: "server error",
+    });
+  }
 };

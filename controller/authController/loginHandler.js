@@ -1,5 +1,13 @@
 const con = require("../../utils/dbConnect");
 const express = require("express");
+const dotenv = require("dotenv");
+
+dotenv.config();
+
+const accountSid = process.env.ACCOUNT_SID;
+const authToken = process.env.AUTH_TOKEN;
+const verifySid = process.env.VERIFY_SID;
+const client = require("twilio")(accountSid, authToken);
 
 /**
  *
@@ -9,15 +17,29 @@ const express = require("express");
 
 module.exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    con.query(`select * from user where email = "${email}"`, (err, result) => {
-      if (err) {
-        console.log(err);
-      } else {
-        return res.status(200).json({
-          res: result,
-        });
-      }
+    const { number } = req.body;
+    if (!number) {
+      res.status(401).json({
+        err: "invalid number input",
+      });
+    }
+    const row = await new Promise((resolve, reject) => {
+      con.query(
+        `select telNum from users where telNum = '${number}'`,
+        (err, result) => {
+          if (err) reject(err);
+          else resolve(result);
+        }
+      );
     });
+
+    client.verify.v2
+      .services(verifySid)
+      .verifications.create({ to: "+905063622251", channel: "sms" })
+      .then((verification) => console.log(verification));
+
+    if (row.length == 0) {
+    } else {
+    }
   } catch {}
 };

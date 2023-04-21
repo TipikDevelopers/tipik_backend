@@ -37,7 +37,6 @@ module.exports.login = async (req, res) => {
       .services(verifySid)
       .verifications.create({ to: number, channel: "sms" });
     return res.status(200).json({
-      token: token,
       msg: "success",
     });
   } catch {

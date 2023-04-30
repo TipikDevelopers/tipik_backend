@@ -28,7 +28,7 @@ module.exports.verifyCode = async (req, res) => {
         },
         process.env.SECRET_KEY,
         {
-          expiresIn: "3m",
+          expiresIn: "90d",
         }
       );
       client.verify.v2

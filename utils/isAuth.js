@@ -17,9 +17,15 @@ module.exports =
       } else {
         const bearerToken = token.split(" ")[1];
         const tokenDecode = jwt.verify(bearerToken, process.env.SECRET_KEY);
-        const user = await User.findById(
-          new mongoose.Types.ObjectId(tokenDecode.user_id)
-        );
+        const user = await new Promise((resolve, reject) => {
+          con.query(
+            `select * from users where telNum = ${tokenDecode[0].iduser}`,
+            (err, result) => {
+              if (err) reject(err);
+              else resolve(result);
+            }
+          );
+        });
 
         if (!user) {
           return res.status(401).json({

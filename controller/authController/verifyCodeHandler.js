@@ -28,7 +28,7 @@ module.exports.verifyCode = async (req, res) => {
         },
         process.env.SECRET_KEY,
         {
-          expiresIn: "3h",
+          expiresIn: "3m",
         }
       );
       client.verify.v2
@@ -42,7 +42,7 @@ module.exports.verifyCode = async (req, res) => {
         );
     } catch {
       return res.status(401).json({
-        err: "wron number or invalid otp code format",
+        err: "wrong number or invalid otp code format",
       });
     }
   } catch {

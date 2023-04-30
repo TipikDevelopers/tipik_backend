@@ -11,7 +11,6 @@ const convert = require("xml2json");
 let userId = 12;
 module.exports.register = async (req, res) => {
   try {
-    let user;
     let isUser; //parameter for checking if user exists in tc database
 
     const { firstName, lastName, year, tc, number } = req.body;
